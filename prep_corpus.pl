@@ -10,7 +10,6 @@ closedir ($rep);
 print("<corpus>\n");
 
 foreach my $file(@files) {
-    # Traitement des fichiers
     if ( -f "$Path/$file") {
         #`prep_bulletin.pl $file`;
         `prep_bulletin.pl`;
