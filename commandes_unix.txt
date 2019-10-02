@@ -1,0 +1,11 @@
+ls | wc -l //connaitre le nombre de fichiers dans le folder OLD - 326
+
+egrep '<span class="style95" style="color:inherit">[0-9]+' * | wc -l //326 OK
+egrep '<span class="style32">BE France [0-9]+' * | wc -l //326 OK
+egrep '<p class="style96"><span class="style42">.*<br><\/span>' * | wc -l //326 OK
+egrep '<span class="style42">.*[0-9]+\/[0-9]+\/[0-9]+' * | wc -l //326 OK
+egrep '<span class="style17">.*<\/span>' * | wc -l //326 OK
+egrep '<p class="style96"><span class="style95">.*<\/span>' * | wc -l //18 KO
+egrep '<div style="text-align: center"><img src=".*\.\w{3,4}' * | wc -l //154 OK 
+egrep '<span class="style21"><strong>' * | wc -l //134 
+egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //133 légendes dans le contenu (21 images sans légende, à gérer dans le code)
