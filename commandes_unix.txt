@@ -9,3 +9,5 @@ egrep '<p class="style96"><span class="style95">.*<\/span>' * | wc -l //18 KO
 egrep '<div style="text-align: center"><img src=".*\.\w{3,4}' * | wc -l //154 OK 
 egrep '<span class="style21"><strong>' * | wc -l //134 
 egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //133 légendes dans le contenu (21 images sans légende, à gérer dans le code)
+
+./segmente_TT.pl corpus_P17_s (pour créer les tokens à partir du fichier donné par le prof)
