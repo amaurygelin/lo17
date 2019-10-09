@@ -12,6 +12,7 @@ sub remove_html_tags {
 open($fd,'<',$ARGV[0]) or die("open: $!"); # open the file passed an an argument in READ mode 
 
 $flag_image = 0; # flag to deal with images that don't have a legend
+$flag_credit = 0;
 $flag_multiline_text = 0;
 $texte = '';
 
@@ -39,28 +40,29 @@ while(<$fd>) {
 
     if($_ =~ /<p class="style96"><span class="style95">(.*)<br \/>/) { # multi-line text
         $flag_multiline_text = 1;
-        $texte = $1;
     }
-    if($flag_multiline_text && $_ =~ /<\/span>/) {
+    if($flag_multiline_text && $_ =~ /<\/p>/) { #to do : vérifier que balise p est partout pour le texte
         $flag_multiline_text = 0; # end of multi-line text
     }
     if($flag_multiline_text && $_ !=~ /\\n/) {
-        $texte = $texte.$_; # add full line to the text
-    }
-
-    if($_ =~ /<div style="text-align: center"><img src="(.*\.\w{3,4})/){
-        $flag_image = 1;
-        $url_image = $1;
-    }
-    if($flag_image && $_ =~ /<span class="style21"><strong>(.*)<\/strong>/){
-        $images{$url_image} = $1;
-        $flag_image = 0;
-    }
-
+        if($flag_multiline_text && $_ =~ /<div style="text-align: center"><img src="(.*\.\w{3,4})/) {
+            $flag_image = 1;
+            $url_image = $1;
+        } elsif($flag_image && $_ =~ /<span class="style21"><strong>(.*)<\/strong>/){
+            $images{$url_image} = $1;
+            $flag_image = 0;
+            $flag_credit = 1;
+        } elsif($flag_credit && $_ =~ /<span class="style88">(.*)<\/span>/){ 
+            next; #enlever crédits image
+        } else {
+            $texte = $texte.$_; # add full line to the text
+        }
+    }  
     if($_ =~ /<p class="style44"><span class="style85">(.*)<\/span>/){
         $contact = $1;
     }
 }
+
 print("<bulletin>\n");
 print("<fichier>$fichier</fichier>\n");
 print("<numero>$numero</numero>\n");
@@ -73,11 +75,14 @@ while(($url, $legende) = each(%images)) {
     $balisesImages = $balisesImages."<image><urlImage>$url</urlImage><legendeImage>$legende</legendeImage></image>";
 }
 $size = length $balisesImages;
-if($size > 0) { # if there is no images, we don't display the tag <images>
-    print("<images>$balisesImages</images>\n");
-
-}
+#if($size > 0) { # if there is no images, we don't display the tag <images>
+#    print("<images>$balisesImages</images>\n");
+#}
+print("<images>$balisesImages</images>\n");
 print("<contact>$contact</contact>\n");
 print("</bulletin>\n");
 
 close($fd);
+
+#vérifier qu'on a bien récupéré tout le texte
+#faire un fichier de log
