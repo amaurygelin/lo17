@@ -3,16 +3,20 @@
 # This script goes through a file of from the corpus "BULLETINS" and creates an XML that gathers the information of the file in a structure that will be easily indexable
 # The regular expressions that let us find elements in the file are proved to be sound (see commandes_unix.txt)
 
+#TO DO
+#vérifier qu'on a bien récupéré tout le texte
+#faire un fichier de log
+
 sub remove_html_tags {
     $html_text = $_[0]; # passing argument
     ($plain_text = $html_text) =~ s/<[^>]*>//gs;
     return $plain_text;
 }
 
-open($fd,'<',$ARGV[0]) or die("open: $!"); # open the file passed an an argument in READ mode 
+open($fd,'<',$ARGV[0]) or die("open: $!"); # open the file passed as an argument in READ mode 
 
-$flag_image = 0; # flag to deal with images that don't have a legend
-$flag_credit = 0;
+$flag_image = 0; #flag to deal with images that don't have a legend
+$flag_credit = 0; #flag to check if there is credits to an image
 $flag_multiline_text = 0;
 $texte = '';
 
@@ -53,7 +57,8 @@ while(<$fd>) {
             $flag_image = 0;
             $flag_credit = 1;
         } elsif($flag_credit && $_ =~ /<span class="style88">(.*)<\/span>/){ 
-            next; #enlever crédits image
+            $flag_credit = 0;
+            next; #remove credits to image if there are
         } else {
             $texte = $texte.$_; # add full line to the text
         }
@@ -75,14 +80,8 @@ while(($url, $legende) = each(%images)) {
     $balisesImages = $balisesImages."<image><urlImage>$url</urlImage><legendeImage>$legende</legendeImage></image>";
 }
 $size = length $balisesImages;
-#if($size > 0) { # if there is no images, we don't display the tag <images>
-#    print("<images>$balisesImages</images>\n");
-#}
 print("<images>$balisesImages</images>\n");
 print("<contact>$contact</contact>\n");
 print("</bulletin>\n");
 
 close($fd);
-
-#vérifier qu'on a bien récupéré tout le texte
-#faire un fichier de log
