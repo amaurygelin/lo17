@@ -10,4 +10,12 @@ egrep '<div style="text-align: center"><img src=".*\.\w{3,4}' * | wc -l //154 OK
 egrep '<span class="style21"><strong>' * | wc -l //134 
 egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //133 légendes dans le contenu (21 images sans légende, à gérer dans le code)
 
-./segmente_TT.pl corpus_P17_s (pour créer les tokens à partir du fichier donné par le prof)
+./prep_corpus > temp.xml (to create an XML file that contains the ouput) 
+./convert.pl temp.xml > final.xml (to remove the HTML special characters of the output)
+
+./segmente_TT.pl corpus_P17_ss_balise.xml > tokens.txt (pour créer les tokens à partir du fichier donné par le prof)
+./segmente_TT.pl corpus_P17_ss_balise.xml > tokensFiles.txt (pour créer le fichier de tokens avec les fichiers associés à chaque token - 2 colonnes)
+
+./tf.pl tokensFiles.txt > tf.txt
+./idf.pl tokensFiles.txt > idf.txt
+./tfidf.pl tokensFiles.txt > tfidf.txt
