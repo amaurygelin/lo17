@@ -3,9 +3,8 @@
 # This script goes through a file of from the corpus "BULLETINS" and creates an XML that gathers the information of the file in a structure that will be easily indexable
 # The regular expressions that let us find elements in the file are proved to be sound (see commandes_unix.txt)
 
-#TO DO
-#vérifier qu'on a bien récupéré tout le texte
-#faire un fichier de log
+# TODO vérifier qu'on a bien récupéré tout le texte 
+# TODO faire un fichier de log
 
 sub remove_html_tags {
     $html_text = $_[0]; # passing argument
