@@ -14,8 +14,13 @@ egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //133 légendes dan
 ./convert.pl temp.xml > final.xml (to remove the HTML special characters of the output)
 
 ./segmente_TT.pl corpus_P17_ss_balise.xml > tokens.txt (pour créer les tokens à partir du fichier donné par le prof)
-./segmente_TT.pl corpus_P17_ss_balise.xml > tokensFiles.txt (pour créer le fichier de tokens avec les fichiers associés à chaque token - 2 colonnes)
+./segmente_TT.pl -f corpus_P17_ss_balise.xml > tokensFiles.txt (pour créer le fichier de tokens avec les fichiers associés à chaque token - 2 colonnes)
 
-./tf.pl tokensFiles.txt > tf.txt
-./idf.pl tokensFiles.txt > idf.txt
-./tfidf.pl tokensFiles.txt > tfidf.txt
+./tf.pl > tf.txt
+./df.pl > df.txt
+./df_perc.pl > df_perc.txt
+./idf.pl > idf.txt
+./tfidf.pl > tfidf.txt
+./stop_list.pl > stop_list.txt
+./newcreeFiltre.pl stop_list.txt > remove_stop_words.pl (ça print un script donc on peut le mettre dans un fichier pl)
+./remove_stop_words.pl corpus_P17_ss_balise.xml > corpus_without_stop_words.xml

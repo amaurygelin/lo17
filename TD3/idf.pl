@@ -1,22 +1,17 @@
 #!/usr/bin/env perl
 
-open($fd,'<',$ARGV[0]) or die("open: $!"); # open the file passed an an argument in READ mode 
+open($fd,'<','./df.txt') or die("open: $!"); 
 
 sub log10 {
     my $n = shift;
     return log($n)/log(10);
 }
 
-my %idf;
-
 while(<$fd>) {
-    chomp; #by annly
-    $idf{$_} += 1;
-}
-
-while( my ($key,$value) = each(%idf) ) {
-    $idft = log10(326 / $value); # there are 326 documents (proven with a grep)
-    print "$key $idft\n";
+    if($_ =~ /(.*)\t(.*)/) {
+        $idf = log10(326 / $2);
+        print "$1\t$idf\n";
+    }
 }
 
 close($fd);
