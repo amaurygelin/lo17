@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-open($fd,'<','./tf.txt') or die("open: $!");
+open($fd,'<','tf.txt') or die("open: $!");
 
 my %df;
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
-open($fd_tf,'<','./tf.txt') or die("open: $!");
-open($fd_idf,'<','./idf.txt') or die("open: $!");
+open($fd_tf,'<','tf.txt') or die("open: $!");
+open($fd_idf,'<','idf.txt') or die("open: $!");
 
 my %idf; # remake the idf hash table so that we go through it once only
 

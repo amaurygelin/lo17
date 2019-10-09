@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-open($fd,'<','./df.txt') or die("open: $!");
+open($fd,'<','df.txt') or die("open: $!");
 
 while(<$fd>) {
     if($_ =~ /(.*)\t(.*)/) {

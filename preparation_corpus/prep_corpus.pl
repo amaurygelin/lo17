@@ -20,5 +20,3 @@ foreach my $file(@files) {
 }
 
 print("</corpus>\n");
-
-
