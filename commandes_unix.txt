@@ -1,0 +1,26 @@
+ls | wc -l //connaitre le nombre de fichiers dans le folder OLD - 326
+
+egrep '<span class="style95" style="color:inherit">[0-9]+' * | wc -l //326 OK
+egrep '<span class="style32">BE France [0-9]+' * | wc -l //326 OK
+egrep '<p class="style96"><span class="style42">.*<br><\/span>' * | wc -l //326 OK
+egrep '<span class="style42">.*[0-9]+\/[0-9]+\/[0-9]+' * | wc -l //326 OK
+egrep '<span class="style17">.*<\/span>' * | wc -l //326 OK
+egrep '<p class="style96"><span class="style95">.*<\/span>' * | wc -l //18 KO
+egrep '<div style="text-align: center"><img src=".*\.\w{3,4}' * | wc -l //154 OK 
+egrep '<span class="style21"><strong>' * | wc -l //134 
+egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //133 légendes dans le contenu (21 images sans légende, à gérer dans le code)
+
+./prep_corpus > temp.xml (to create an XML file that contains the ouput) 
+./convert.pl temp.xml > final.xml (to remove the HTML special characters of the output)
+
+./segmente_TT.pl corpus_P17_ss_balise.xml > tokens.txt (pour créer les tokens à partir du fichier donné par le prof)
+./segmente_TT.pl -f corpus_P17_ss_balise.xml > tokensFiles.txt (pour créer le fichier de tokens avec les fichiers associés à chaque token - 2 colonnes)
+
+./tf.pl > tf.txt
+./df.pl > df.txt
+./df_perc.pl > df_perc.txt
+./idf.pl > idf.txt
+./tfidf.pl > tfidf.txt
+./stop_list.pl > stop_list.txt
+./newcreeFiltre.pl stop_list.txt > remove_stop_words.pl (ça print un script donc on peut le mettre dans un fichier pl)
+./remove_stop_words.pl corpus_P17_ss_balise.xml > corpus_without_stop_words.xml
