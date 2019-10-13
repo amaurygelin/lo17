@@ -16,7 +16,7 @@ sub remove_html_tags {
 open($fd,'<',$ARGV[0]) or die("open: $!"); # open the file passed as an argument in READ mode 
 
 $flag_image = 0; #flag to deal with images that don't have a legend
-$flag_credit = 0; #flag to check if there is credits to an image
+$flag_credit = 0; #flag to check if there are credits to an image
 $flag_multiline_text = 0;
 $texte = '';
 
@@ -50,12 +50,13 @@ while(<$fd>) {
     }
     if($flag_multiline_text && $_ !=~ /\\n/) {
         if($flag_multiline_text && $_ =~ /<div style="text-align: center"><img src="(.*\.\w{3,4})/) {
-            $flag_image = 1;
             $url_image = $1;
+            $images{$1} = "";  #in case the image doesn't have a legend, still in the hashtable
+            $flag_image = 1;
+            $flag_credit = 1;
         } elsif($flag_image && $_ =~ /<span class="style21"><strong>(.*)<\/strong>/){
             $images{$url_image} = $1;
             $flag_image = 0;
-            $flag_credit = 1;
         } elsif($flag_credit && $_ =~ /<span class="style88">(.*)<\/span>/){ 
             $flag_credit = 0;
             next; #remove credits to image if there are
@@ -79,7 +80,6 @@ print("<texte>$texte</texte>\n");
 while(($url, $legende) = each(%images)) {
     $balisesImages = $balisesImages."<image><urlImage>$url</urlImage><legendeImage>$legende</legendeImage></image>";
 }
-$size = length $balisesImages;
 print("<images>$balisesImages</images>\n");
 print("<contact>$contact</contact>\n");
 print("</bulletin>\n");
