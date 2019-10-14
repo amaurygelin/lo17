@@ -3,9 +3,9 @@
 # This script goes through a file of from the corpus "BULLETINS" and creates an XML that gathers the information of the file in a structure that will be easily indexable
 # The regular expressions that let us find elements in the file are proved to be sound (see commandes_unix.txt)
 
-#TO DO
-#vérifier qu'on a bien récupéré tout le texte
-#faire un fichier de log
+# TO DO
+# vérifier qu'on a bien récupéré tout le texte
+# faire un fichier de log
 
 sub remove_html_tags {
     $html_text = $_[0]; # passing argument
@@ -51,7 +51,7 @@ while(<$fd>) {
     if($flag_multiline_text && $_ !=~ /\\n/) {
         if($flag_multiline_text && $_ =~ /<div style="text-align: center"><img src="(.*\.\w{3,4})/) {
             $url_image = $1;
-            $images{$1} = "";  #in case the image doesn't have a legend, still in the hashtable
+            $images{$1} = "";  # in case the image doesn't have a legend, still in the hashtable
             $flag_image = 1;
             $flag_credit = 1;
         } elsif($flag_image && $_ =~ /<span class="style21"><strong>(.*)<\/strong>/){
@@ -59,7 +59,7 @@ while(<$fd>) {
             $flag_image = 0;
         } elsif($flag_credit && $_ =~ /<span class="style88">(.*)<\/span>/){ 
             $flag_credit = 0;
-            next; #remove credits to image if there are
+            next; # remove credits to image if there are
         } else {
             $texte = $texte.$_; # add full line to the text
         }

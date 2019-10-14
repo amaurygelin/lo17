@@ -1,5 +1,6 @@
 #!/usr/bin/perl
-# use utf8;
+use utf8;
+
 binmode(STDIN, ":utf8");
 binmode(STDOUT, ":utf8");
 for ($i=0; $i<3; $i++) { 
@@ -15,6 +16,9 @@ for ($i=0; $i<3; $i++) {
    }
 }
 while (<>) {
+
+	binmode ARGV, ':utf8'; # look https://stackoverflow.com/questions/519309/how-do-i-read-utf-8-with-diamond-operator
+
  	if (/<fichier>(.*)<\/fichier>/i && ($fbavard==1))
         {
 		$fichier = "\t".$1; 

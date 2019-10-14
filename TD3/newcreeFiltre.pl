@@ -6,7 +6,8 @@ print "#!/usr/bin/perl\n\n";
 print "while (<>) {\n";
 # print "\tif (/<resumeArticle>/ || /<titreArticle>/) {\n";	
 print "\tif (/<texte>/ || /<titre>/) {\n";
-print "\t\ttr/A-Z/a-z/;\n";
+print "\t\ttr/A-Z/a-z/;\n"; # uppercase characters replaced by lowercase
+# Translation works on a per character basis, replacing each item in the first list with the character at the same position in the second list. 
 #print "\t\ts/($separ)$nonsepar$nonsepar?($separ)/\$1\$2/g;\n";
 while (<>) {
 	chop;
