@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-open($fd,'<','./df.txt') or die("open: $!"); 
+open($fd,'<','df.txt') or die("open: $!"); 
 
 sub log10 {
     my $n = shift;
