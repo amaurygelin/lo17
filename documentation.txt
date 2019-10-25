@@ -57,3 +57,9 @@ sed -i '1,83d' words_without_swords.txt
 Dans le dossier "indexation/stemming"
 ./successeurs_P16.pl ../stop_list/words_without_swords.txt > successors.txt
 ./filtronc_P16.pl -v successors.txt stemming.txt
+./newcreeFiltre.pl ./stemming.txt > replace_words_by_lemmes.pl
+./replace_words_by_lemmes.pl ../stop_list/corpus_without_stop_words.xml > corpus_with_lemmes.xml
+
+Dans le dossier "indexation/inverse_files
+./contact_to_email.pl > corpus_indexation.xml
+./create_inverse_files.sh

@@ -32,4 +32,3 @@ while (<>) {
 foreach $index (@cleindex) {
 	print $index.$tabindex{$index}."\n";
 }
-
