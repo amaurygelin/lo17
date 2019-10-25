@@ -14,7 +14,7 @@ egrep '<div style="text-align: center"><img src=".*\.\w{3,4}' * | wc -l //154 OK
 egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //134 
     (20 images don't have a legend)
 
-./prep_corpus > corpus_temp.xml
+./prep_corpus.pl > corpus_temp.xml
 ./convert.pl corpus_temp.xml > corpus_converted.xml 
     (to remove the HTML special characters of the output)
 
@@ -35,14 +35,14 @@ egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //134
     (tf.txt & idf.txt need to be created before)
 ./stop_list.pl > stop_list.txt 
     (df_perc.txt needs to be created before)
-./newcreeFiltre.pl stop_list.txt > remove_stop_words.pl 
+./newcreeFiltre.pl ./stop_list/stop_list.txt > remove_stop_words.pl 
     (prints a perl script on a new pl file)
 ./remove_stop_words.pl corpus_P17_ss_balise.xml > corpus_without_stop_words.xml
 
 ./segmente_TT.pl corpus_without_swords.xml > tokens_without_swords.txt 
     (we retokenize the XML without stop words)
     (KO)
-    FIXME: tokenization fails on many words (ex °alors etc...), this is probably due to the              replacement in the XML
+    FIXME: tokenization fails on many words (ex °alors etc...), this is probably due to the replacement in the XML
 sort -u tokens_without_swords.txt > words_without_swords.txt
     (we remove duplications with the option -u of sort)
     (OK)
