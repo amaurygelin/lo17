@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-open($fd,'<','../tokensFiles.txt') or die("open: $!"); 
+open($fd,'<','../tokenization/tokensFiles.txt') or die("open: $!"); 
 
 my %tf;
 

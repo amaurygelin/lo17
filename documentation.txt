@@ -14,15 +14,19 @@ egrep '<div style="text-align: center"><img src=".*\.\w{3,4}' * | wc -l //154 OK
 egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //134 
     (20 images don't have a legend)
 
+Dans le dossier "preparation_corpus"
 ./prep_corpus.pl > corpus_temp.xml
 ./convert.pl corpus_temp.xml > corpus_converted.xml 
     (to remove the HTML special characters of the output)
+Puis on utilise le XML généré par le prof ensuite
 
-./segmente_TT.pl corpus_P17_ss_balise.xml > tokens.txt 
+Dans le dossier "indexation/tokenization"
+./segmente_TT.pl ../../preparation_corpus/corpus_P17_ss_balise.xml > tokens.txt 
     (create tokens using the corpus of the prof)
-./segmente_TT.pl -f corpus_P17_ss_balise.xml > tokensFiles.txt 
+./segmente_TT.pl -f ../../preparation_corpus/corpus_P17_ss_balise.xml > tokensFiles.txt 
     (create token/file pairs)
 
+Dans le dossier "indexation/statistics"
 ./tf.pl > tf.txt
     (tokensFiles.txt needs to be created)
 ./df.pl > df.txt
@@ -33,20 +37,23 @@ egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //134
     (df.txt needs to be created before)
 ./tfidf.pl > tfidf.txt 
     (tf.txt & idf.txt need to be created before)
+
+Dans le dossier "indexation/stop_list"
 ./stop_list.pl > stop_list.txt 
     (df_perc.txt needs to be created before)
-./newcreeFiltre.pl ./stop_list/stop_list.txt > remove_stop_words.pl 
+./newcreeFiltre.pl ./stop_list.txt > remove_stop_words.pl 
     (prints a perl script on a new pl file)
-./remove_stop_words.pl corpus_P17_ss_balise.xml > corpus_without_stop_words.xml
-
-./segmente_TT.pl corpus_without_swords.xml > tokens_without_swords.txt 
+	ADD those two lines to remove_stop_words.pl to kick out degrees:
+	s/([ \t',.;:?\/"`+*^\(\)\[\]<>-])\d+°c([ \t',.;:?\/"`+*^\(\)\[\]<>-])/$1$2/g;
+	s/([ \t',.;:?\/"`+*^\(\)\[\]<>-])\d+°([ \t',.;:?\/"`+*^\(\)\[\]<>-])/$1$2/g;
+./remove_stop_words.pl ../../preparation_corpus/corpus_P17_ss_balise.xml > corpus_without_stop_words.xml
+./segmente_TT.pl corpus_without_stop_words.xml > tokens_without_swords.txt
     (we retokenize the XML without stop words)
-    (KO)
-    FIXME: tokenization fails on many words (ex °alors etc...), this is probably due to the replacement in the XML
 sort -u tokens_without_swords.txt > words_without_swords.txt
     (we remove duplications with the option -u of sort)
-    (OK)
+sed -i '1,83d' words_without_swords.txt
+    (remove the first 83 lines because there are still bad words)
 
-./successeurs_P16.pl words_without_swords.txt > successors.txt
-    (OK mais à faire sur un words_without_swords.txt non bugué)
-./filtronc_P16.pl -v successors.txt > stemming.txt
+Dans le dossier "indexation/stemming"
+./successeurs_P16.pl ../stop_list/words_without_swords.txt > successors.txt
+./filtronc_P16.pl -v successors.txt stemming.txt
