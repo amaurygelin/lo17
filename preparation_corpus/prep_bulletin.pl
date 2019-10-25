@@ -5,7 +5,6 @@
 
 # TO DO
 # vérifier qu'on a bien récupéré tout le texte
-# faire un fichier de log
 
 sub remove_html_tags {
     $html_text = $_[0]; # passing argument
@@ -14,6 +13,7 @@ sub remove_html_tags {
 }
 
 open($fd,'<',$ARGV[0]) or die("open: $!"); # open the file passed as an argument in READ mode 
+open(my $logFile,'>>',"prep_corpus.log") or die "Impossible d'ouvrir le fichier prep_corpus.log\n";
 
 $flag_image = 0; #flag to deal with images that don't have a legend
 $flag_credit = 0; #flag to check if there are credits to an image
@@ -84,4 +84,11 @@ print("<images>$balisesImages</images>\n");
 print("<contact>$contact</contact>\n");
 print("</bulletin>\n");
 
+if ($fichier eq "" || $numero eq "" || $date eq "" || $rubrique eq "" || $titre eq "" || $texte eq ""){
+    print($logFile "Problem with file $ARGV[0] - missing information\n");
+} else {
+    print($logFile "OK - $ARGV[0]\n");
+}
+
 close($fd);
+close($logFile) ;

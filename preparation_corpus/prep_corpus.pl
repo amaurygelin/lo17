@@ -4,7 +4,12 @@
 
 $Path = "OLD_BULLETINS_LO17";
 
-opendir(my $rep, $Path) or die "Impossible d'ouvrir le repertoire $Path\n";
+open(my $logFile,'>>',"prep_corpus.log") or die "Impossible d'ouvrir le fichier prep_corpus.log\n";
+my $timestamp = localtime(time);
+print($logFile "--- Corpus preparetion run on $timestamp ---\n");
+close($logFile) ;
+
+opendir(my $rep, $Path) or die "Impossible d'ouvrir le répertoire $Path\n";
 my @files = grep { $_ =~ /\d{5}/ } readdir($rep);
 closedir ($rep);
 
@@ -18,3 +23,4 @@ foreach my $file(@files) {
 }
 
 print("</corpus>\n");
+
