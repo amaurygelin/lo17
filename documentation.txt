@@ -9,24 +9,24 @@ egrep '<span class="style42">.*[0-9]+\/[0-9]+\/[0-9]+' * | wc -l //326 OK
 egrep '<span class="style17">.*<\/span>' * | wc -l //326 OK
 egrep '<p class="style96"><span class="style95">.*<\/span>' * | wc -l //18 KO
     (was solved by handling multi lines texts)
-egrep '<div style="text-align: center"><img src=".*\.\w{3,4}' * | wc -l //154 OK 
+egrep '<div style="text-align: center">.*<img src=".*\.\w{3,4}' * | wc -l //155 OK 
     (some documents don't have any images)
-egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //134 
-    (20 images don't have a legend)
+egrep '<span class="style21"><strong>.*<\/strong>' * | wc -l //133
+    (22 images don't have a legend)
 
-Dans le dossier "preparation_corpus"
+In directory : "preparation_corpus"
 ./prep_corpus.pl > corpus_temp.xml
 ./convert.pl corpus_temp.xml > corpus_converted.xml 
     (to remove the HTML special characters of the output)
-Puis on utilise le XML généré par le prof ensuite
+We then use the XML file given by the teacher
 
-Dans le dossier "indexation/tokenization"
+In directory : "indexation/tokenization"
 ./segmente_TT.pl ../../preparation_corpus/corpus_P17_ss_balise.xml > tokens.txt 
     (create tokens using the corpus of the prof)
 ./segmente_TT.pl -f ../../preparation_corpus/corpus_P17_ss_balise.xml > tokensFiles.txt 
     (create token/file pairs)
 
-Dans le dossier "indexation/statistics"
+In directory : "indexation/statistics"
 ./tf.pl > tf.txt
     (tokensFiles.txt needs to be created)
 ./df.pl > df.txt
@@ -38,7 +38,7 @@ Dans le dossier "indexation/statistics"
 ./tfidf.pl > tfidf.txt 
     (tf.txt & idf.txt need to be created before)
 
-Dans le dossier "indexation/stop_list"
+In directory : "indexation/stop_list"
 ./stop_list.pl > stop_list.txt 
     (df_perc.txt needs to be created before)
 ./newcreeFiltre.pl ./stop_list.txt > remove_stop_words.pl 
@@ -54,12 +54,12 @@ sort -u tokens_without_swords.txt > words_without_swords.txt
 sed -i '1,83d' words_without_swords.txt
     (remove the first 83 lines because there are still bad words)
 
-Dans le dossier "indexation/stemming"
+In directory : "indexation/stemming"
 ./successeurs_P16.pl ../stop_list/words_without_swords.txt > successors.txt
 ./filtronc_P16.pl -v successors.txt stemming.txt
 ./newcreeFiltre.pl ./stemming.txt > replace_words_by_lemmes.pl
 ./replace_words_by_lemmes.pl ../stop_list/corpus_without_stop_words.xml > corpus_with_lemmes.xml
 
-Dans le dossier "indexation/inverse_files
+In directory : "indexation/inverse_files
 ./contact_to_email.pl > corpus_indexation.xml
 ./create_inverse_files.sh

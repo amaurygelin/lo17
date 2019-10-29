@@ -6,7 +6,7 @@ $Path = "OLD_BULLETINS_LO17";
 
 open(my $logFile,'>>',"prep_corpus.log") or die "Impossible d'ouvrir le fichier prep_corpus.log\n";
 my $timestamp = localtime(time);
-print($logFile "--- Corpus preparetion run on $timestamp ---\n");
+print($logFile "--- Corpus preparation run on $timestamp ---\n");
 close($logFile) ;
 
 opendir(my $rep, $Path) or die "Impossible d'ouvrir le répertoire $Path\n";
