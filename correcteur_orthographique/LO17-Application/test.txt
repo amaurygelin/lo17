@@ -1,0 +1,14 @@
+grnade	grande
+grenade	grenade
+mnager	manger
+manager	manager
+vuex	veux
+vue	vue
+avez	avez
+ilste	liste
+reste	reste
+perte	perte
+ilo	loi
+microbien	microb
+attestation	attest
+attester	attest
