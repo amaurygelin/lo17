@@ -1,35 +1,36 @@
 grammar tal_sql;
 
-SELECT : 'vouloir' | 'aimer' | 'souhaiter' | 'donner' | 'afficher' | 'trouver' | 'lister' | 'chercher' | 'retourner' | 'retrouver' | 'quel' | 'qui' ;
+SELECT : 'vouloir' ;
 
-SELECT_COUNT : 'combien' | 'nombre' | 'le plus' ;	
+SELECT_COUNT : 'combien' | 'nombre' ;	
 
-ARTICLE : 'article'
-;
+ARTICLE : 'article' ;
 
-BULLETIN : 'bulletin'
-;
+BULLETIN : 'bulletin' ;
 
-CONJ : 'et' | 'ou'
-;
+AND : 'et' ;
 
-POINT : '.'
-;
+OR : 'ou' ;
 
-MOT : 'mot' | 'contenir' | 'parler' | 'traiter' | 'citer' | 'concerner' | 'sur' | 'posséder' | 'sujet'
-;
+SANS 	: 'sans' | 'sauf' ;
+
+POINT : '.';
+
+VIRGULE : ',' ;
+
+MOT : 'mot' ;
 
 AUTEUR 	: 'auteur' | 'écrire' ;
 
 DATE 	: 'date' ;
 
+DATE_AVANT : 'date avant';
+
+DATE_APRES : 'date apres';
+
 RUBRIQUE : 'rubrique' ;
  
-WS  : (' ' |'\t' | '\r' | 'je' | 'qui' | 'dont') {skip();} | '\n' 
-;
-
-STRING 	: ('A'..'Z' | 'a'..'z') ('a'..'z')+
-;
+STRING 	: ('A'..'Z' | 'a'..'z') ('a'..'z')+ ;
 
 listerequetes returns [String sql = ""]
 	@init	{Arbre lr_arbre;}: 
@@ -44,7 +45,7 @@ requete returns [Arbre req_arbre = new Arbre("")]
 	@init {Arbre ps_arbre;} : 
 		(SELECT 
 			{
-				req_arbre.ajouteFils(new Arbre("","select distinct"));
+			req_arbre.ajouteFils(new Arbre("","select distinct"));
 			} 
 		| SELECT_COUNT
 			{
@@ -54,9 +55,17 @@ requete returns [Arbre req_arbre = new Arbre("")]
 			{
 			req_arbre.ajouteFils(new Arbre("","article"));
 			}
-		 | BULLETIN
+		| BULLETIN
 			{
 			req_arbre.ajouteFils(new Arbre("","bulletin"));
+			}
+		| AUTEUR 
+			{
+			req_arbre.ajouteFils(new Arbre("","auteur"));
+			}
+		| DATE
+			{
+			req_arbre.ajouteFils(new Arbre("","date"));
 			})
 		(MOT
 			{
@@ -67,8 +76,8 @@ requete returns [Arbre req_arbre = new Arbre("")]
 			{
 				ps_arbre = $ps.les_pars_arbre;
 				req_arbre.ajouteFils(ps_arbre);
-			} )?
-		(RUBRIQUE
+			}
+		| RUBRIQUE
 			{
 				req_arbre.ajouteFils(new Arbre("","from rubrique"));
 				req_arbre.ajouteFils(new Arbre("","where"));
@@ -77,8 +86,8 @@ requete returns [Arbre req_arbre = new Arbre("")]
 			{
 				ps_arbre = $ps.les_pars_arbre;
 				req_arbre.ajouteFils(ps_arbre);
-			} )?
-		(AUTEUR 
+			}
+		| AUTEUR 
 			{
 				req_arbre.ajouteFils(new Arbre("","from auteur"));
 				req_arbre.ajouteFils(new Arbre("","where"));			
@@ -87,24 +96,67 @@ requete returns [Arbre req_arbre = new Arbre("")]
 			{
 				ps_arbre = $ps.les_pars_arbre;
 				req_arbre.ajouteFils(ps_arbre);
-			})?
+			}
+		| DATE 
+			{
+				req_arbre.ajouteFils(new Arbre("","from article"));
+				req_arbre.ajouteFils(new Arbre("","where"));			
+			}
+		ps = params_date
+			{
+				ps_arbre = $ps.les_pars_arbre;
+				req_arbre.ajouteFils(ps_arbre);		
+			}
+		| DATE_AVANT 
+			{
+				req_arbre.ajouteFils(new Arbre("","from article"));
+				req_arbre.ajouteFils(new Arbre("","where"));			
+			}
+		ps = params_date_avant
+			{
+				ps_arbre = $ps.les_pars_arbre;
+				req_arbre.ajouteFils(ps_arbre);		
+			}
+		| DATE_APRES
+			{
+				req_arbre.ajouteFils(new Arbre("","from article"));
+				req_arbre.ajouteFils(new Arbre("","where"));			
+			}
+		ps = params_date_apres
+			{
+				ps_arbre = $ps.les_pars_arbre;
+				req_arbre.ajouteFils(ps_arbre);		
+			})+
 
 ;
 
 params returns [Arbre les_pars_arbre = new Arbre("")]
-	@init	{Arbre par1_arbre, par2_arbre;} : 
+	@init	{Arbre par1_arbre, par2_arbre, par3_arbre;} : 
 		par1 = param 
 			{
 				par1_arbre = $par1.lepar_arbre;
 				les_pars_arbre.ajouteFils(par1_arbre);
 			}
-		(CONJ par2 = param
+		(OR par2 = param
 			{
 				par2_arbre = $par2.lepar_arbre;
 				les_pars_arbre.ajouteFils(new Arbre("", "OR"));
 				les_pars_arbre.ajouteFils(par2_arbre);
 			}
-		)*
+		| AND par2 = param
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			})*
+			
+		(SANS par3 = param
+			{
+				par3_arbre = $par3.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND NOT"));
+				les_pars_arbre.ajouteFils(par3_arbre);
+			}
+		)?	
 ;
 
 params_rubrique returns [Arbre les_pars_arbre = new Arbre("")]
@@ -114,13 +166,18 @@ params_rubrique returns [Arbre les_pars_arbre = new Arbre("")]
 				par1_arbre = $par1.lepar_arbre;
 				les_pars_arbre.ajouteFils(par1_arbre);
 			}
-		(CONJ par2 = param_rubrique
+		(OR par2 = param_rubrique
 			{
 				par2_arbre = $par2.lepar_arbre;
 				les_pars_arbre.ajouteFils(new Arbre("", "OR"));
 				les_pars_arbre.ajouteFils(par2_arbre);
 			}
-		)*
+		| AND par2 = param_rubrique
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			})*
 ;
 
 params_auteurs returns [Arbre les_pars_arbre = new Arbre("")]
@@ -130,13 +187,46 @@ params_auteurs returns [Arbre les_pars_arbre = new Arbre("")]
 				par1_arbre = $par1.lepar_arbre;
 				les_pars_arbre.ajouteFils(par1_arbre);
 			}
-		(CONJ par2 = param_auteur
+		(OR par2 = param_auteur
 			{
 				par2_arbre = $par2.lepar_arbre;
 				les_pars_arbre.ajouteFils(new Arbre("", "OR"));
 				les_pars_arbre.ajouteFils(par2_arbre);
 			}
-		)*
+		| AND par2 = param_auteur
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			})*
+;
+
+
+params_date returns [Arbre les_pars_arbre = new Arbre("")]
+	@init	{Arbre par1_arbre, par2_arbre;} : 
+		par1 = param_date
+			{
+				par1_arbre = $par1.lepar_arbre;
+				les_pars_arbre.ajouteFils(par1_arbre);
+			}
+;
+
+params_date_avant returns [Arbre les_pars_arbre = new Arbre("")]
+	@init	{Arbre par1_arbre, par2_arbre;} : 
+		par1 = param_date_avant
+			{
+				par1_arbre = $par1.lepar_arbre;
+				les_pars_arbre.ajouteFils(par1_arbre);
+			}
+;
+
+params_date_apres returns [Arbre les_pars_arbre = new Arbre("")]
+	@init	{Arbre par1_arbre, par2_arbre;} : 
+		par1 = param_date_apres
+			{
+				par1_arbre = $par1.lepar_arbre;
+				les_pars_arbre.ajouteFils(par1_arbre);
+			}
 ;
 
 param returns [Arbre lepar_arbre = new Arbre("")] :
@@ -154,5 +244,18 @@ param_auteur returns [Arbre lepar_arbre = new Arbre("")] :
 		{ lepar_arbre.ajouteFils(new Arbre("auteur =", "'"+a.getText()+"'"));}
 ;
 
+param_date returns [Arbre lepar_arbre = new Arbre("")] :
+	a = STRING
+		{ lepar_arbre.ajouteFils(new Arbre("date =", "'"+a.getText()+"'"));}
+;
 
+param_date_avant returns [Arbre lepar_arbre = new Arbre("")] :
+	a = STRING
+		{ lepar_arbre.ajouteFils(new Arbre("date <", "'"+a.getText()+"'"));}
+;
+
+param_date_apres returns [Arbre lepar_arbre = new Arbre("")] :
+	a = STRING
+		{ lepar_arbre.ajouteFils(new Arbre("date >", "'"+a.getText()+"'"));}
+;
 
