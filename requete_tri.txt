@@ -23,6 +23,9 @@ Quels sont les évènements ayant lieu en Ile de France après 2014
 quelles sont les titres des articles qui contient le plus d'images
 quelles sont les date des articles qui contient plus d'images
 
+martin.hervedebeaulieu@gmaicom
+
+
 Qui a écrit un article sur ce sujet ?
 Qui a écrit des textes en rapport avec X et Y ?
 Qui contacter au sujet de la nutrition ?
@@ -44,9 +47,10 @@ Je veux savoir quelle rubrique contient le plus d'articles sur "philosophie".
 Je veux savoir quelle rubrique contient le plus d'articles parus en 2013.
 Je veux savoir à quelle date le plus d'articles sont publiés en 2013.
 Je veux les articles sur "Philosophie" ou "philosophe" dans la rubrique "Focus" en 2013 sauf lemois juin.
-Je veux savoir quel mois qui a le plus d’article publiéen 2013dans la rubrique "Evénement".
+Je veux savoir quel mois qui a le plus d’article publiéen 2013 dans la rubrique "Evénement".
 Je veux savoir la moyenne de nombre d'articles publiés par mois en 2012.
 Je veux les articles qui a le numéro 291 dans la rubrique "Du côté des pôles".
+je veux tous les titres de la rubrique focus
 
 [GV + GN]
 Affiche les articles de la rubrique Focus datant du 1er janvier.
@@ -79,7 +83,6 @@ les articles les plus volumineux du fin d'année
 tous les titres en concernant les rubriques : rub1, rub2, rub3 parlant de la science
 titre ou article mentionant les mots : rue, sport, competition
 le premier article de chaque bulletin
-je veux tous les titres de la rubrique focus
 urlImage ou legendeImage des articles parlant des develeoppement en science
 les bulletin avec plus d'images
 les contacts du mois du novembre

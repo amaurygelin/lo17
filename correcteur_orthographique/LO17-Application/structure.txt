@@ -1,0 +1,67 @@
+veux	vouloir
+voudrais	vouloir
+désire	vouloir
+désirerais	vouloir
+besoin	vouloir
+réclame	vouloir
+exige	vouloir
+quel	vouloir
+quelle	vouloir
+quels	vouloir
+quelles	vouloir
+aimerais	vouloir
+affiche	vouloir
+donne	vouloir
+récupère	vouloir
+cherche	vouloir
+trouve	vouloir
+liste	vouloir
+souhaite	vouloir
+combien	combien
+nombre	combien
+quantité	combien
+article	article
+page	article
+fichier	article
+rapport	article
+étude	article
+papier	article
+texte	article
+informations	article
+mot	mot
+mots	mot
+évoque	mot
+parle	mot
+parler	mot
+parlent	mot
+parlant	mot
+sujet	mot
+traite	mot
+traitant	mot
+propos	mot
+thème	mot
+concerne	mot
+concernant	mot
+sur	mot
+mentionne	mot
+mentionnant	mot
+ecrire	auteur
+ecrit	auteur
+paraitre	date
+paru	date
+datant	date
+datent	date
+1er	01
+janvier	mois 01
+fevrier	mois 02
+mars	mois 03
+avril	mois 04
+mai	mois 05
+juin	mois 06
+juillet	mois 07
+aout	mois 08
+septembre	mois 09
+octobre	mois 10
+novembre	mois 11
+decembre	mois 12
+annee	annee
