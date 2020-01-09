@@ -1,4 +1,4 @@
-// $ANTLR 3.5.1 C:\\Users\\annly\\Documents\\UTC\\GI04\\LO17\\TD\\lo17\\antlr_works\\tal_sql.g 2019-12-18 22:31:48
+// $ANTLR 3.5.1 C:\\Users\\annly\\Documents\\UTC\\GI04\\LO17\\TD\\lo17\\antlr_works\\tal_sql.g 2020-01-09 16:09:53
 
 import org.antlr.runtime.*;
 import java.util.Stack;

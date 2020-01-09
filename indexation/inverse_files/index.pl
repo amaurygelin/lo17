@@ -20,7 +20,7 @@ while (<>) {
 #            print("mois $mois\n");
             $annee = "\t".shift(@date);
 #            print("annee $annee\n");
-            $index=$jour.$mois.$annee
+            $index=$jour.$mois.$annee;
         }
         $tabindex{$index} .= "$fichier$numero";
     }
