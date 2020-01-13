@@ -56,14 +56,22 @@ public class interrogPostgresql  {
 		for (int i = 1; i <= nbFields; i++) {
 			fieldsNames[i] = metadata.getColumnName(i);
 		}
-		while (rs.next()) {
-			for (int i = 1; i <= nbFields; i++) {
-				String s = rs.getString(fieldsNames[i]);
-				System.out.print(s);
-				System.out.print("\t");	
-			}
-			System.out.println();
+		
+		if (rs.next() == false) { 
+			System.out.println("\n\nPas de résultat pour cette requête."); 
+		} else { 
+			
+			System.out.println("\nVoici les résultats de la recherche :\n");
+			do { 
+				for (int i = 1; i <= nbFields; i++) {
+					String s = rs.getString(fieldsNames[i]);
+					System.out.print(s);
+					System.out.print("\t");	
+				}
+				System.out.println();
+			} while (rs.next()); 
 		}
+			
 	// Close resources
 	stmt.close();
 	con.close();

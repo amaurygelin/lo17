@@ -19,7 +19,7 @@ public static String main(String arg) {
                 		CommonTokenStream tokens = new CommonTokenStream(lexer);
                 		tal_sqlParser parser = new tal_sqlParser(tokens);
                 		arbre = parser.listerequetes();
-                		System.out.println(arbre);
+                		//System.out.println(arbre);
                 	} catch(Exception e) {  }
             		return arbre ;
                //}

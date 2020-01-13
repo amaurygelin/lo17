@@ -45,6 +45,8 @@ concernant	mot
 sur	mot
 mentionne	mot
 mentionnant	mot
+contacter	auteur
+contact	auteur
 ecrire	auteur
 ecrit	auteur
 paraitre	date

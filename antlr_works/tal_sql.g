@@ -35,6 +35,8 @@ MOIS 	: 'mois' ;
 ANNEE 	: 'annee' ;
 
 RUBRIQUE : 'rubrique' ;
+
+TITRE 	: 'titre' ;
  
 STRING 	: ('A'..'Z' | 'a'..'z') ('a'..'z' | '.' | '@')+ ;
 
@@ -62,7 +64,8 @@ requete returns [Arbre req_arbre = new Arbre("")]
 		| SELECT_COUNT
 			{
 			req_arbre.ajouteFils(new Arbre("","select count(*)"));
-			})
+			}
+		)
 		(ARTICLE
 			{
 			req_arbre.ajouteFils(new Arbre("","fichier"));
@@ -99,6 +102,16 @@ requete returns [Arbre req_arbre = new Arbre("")]
 				req_arbre.ajouteFils(new Arbre("","where"));
 			}
 		ps = params_sans_mot 
+			{
+				ps_arbre = $ps.les_pars_arbre;
+				req_arbre.ajouteFils(ps_arbre);
+			}
+		| TITRE MOT
+			{
+				req_arbre.ajouteFils(new Arbre("","from titre"));
+				req_arbre.ajouteFils(new Arbre("","where"));
+			}
+		ps = params_titre
 			{
 				ps_arbre = $ps.les_pars_arbre;
 				req_arbre.ajouteFils(ps_arbre);
@@ -205,7 +218,42 @@ params returns [Arbre les_pars_arbre = new Arbre("")]
 				par2_arbre = $par2.lepar_arbre;
 				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
 				les_pars_arbre.ajouteFils(par2_arbre);
-			})*
+			}
+		| SANS par2 = param_sans_mot
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			}
+		)*
+;
+
+params_titre returns [Arbre les_pars_arbre = new Arbre("")]
+	@init	{Arbre par1_arbre, par2_arbre, par3_arbre;} : 
+		par1 = param_titre
+			{
+				par1_arbre = $par1.lepar_arbre;
+				les_pars_arbre.ajouteFils(par1_arbre);
+			}
+		(OR par2 = param_titre
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "OR"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			}
+		| AND par2 = param_titre
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			}
+		| SANS par2 = param_sans_titre
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			}
+		)*
 ;
 
 params_sans_mot returns [Arbre les_pars_arbre = new Arbre("")]
@@ -233,7 +281,13 @@ params_rubrique returns [Arbre les_pars_arbre = new Arbre("")]
 		| AND par2 = param_rubrique
 			{
 				par2_arbre = $par2.lepar_arbre;
-				les_pars_arbre.ajouteFils(new Arbre("", "OR"));
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
+				les_pars_arbre.ajouteFils(par2_arbre);
+			}
+		| SANS par2 = param_sans_rubrique
+			{
+				par2_arbre = $par2.lepar_arbre;
+				les_pars_arbre.ajouteFils(new Arbre("", "AND"));
 				les_pars_arbre.ajouteFils(par2_arbre);
 			}
 		)*
@@ -319,6 +373,16 @@ param returns [Arbre lepar_arbre = new Arbre("")] :
 		{ lepar_arbre.ajouteFils(new Arbre("titretexte.mot =", "'"+a.getText()+"'"));}
 ;
 
+param_titre returns [Arbre lepar_arbre = new Arbre("")] :
+	a = STRING
+		{ lepar_arbre.ajouteFils(new Arbre("titre.mot =", "'"+a.getText()+"'"));}
+;
+
+param_sans_titre returns [Arbre lepar_arbre = new Arbre("")] :
+	a = STRING
+		{ lepar_arbre.ajouteFils(new Arbre("titre.mot NOT LIKE", "'"+a.getText()+"'"));}
+;
+
 param_sans_mot returns [Arbre lepar_arbre = new Arbre("")] :
 	a = STRING
 		{ lepar_arbre.ajouteFils(new Arbre("titretexte.mot NOT LIKE", "'"+a.getText()+"'"));}
@@ -376,11 +440,6 @@ param_date returns [Arbre lepar_arbre = new Arbre("")] :
 param_date_avant returns [Arbre lepar_arbre = new Arbre("")] : 
 	(ANNEE a = NUMERO
 		{ lepar_arbre.ajouteFils(new Arbre("date.annee <", "'"+a.getText()+"'"));}
-	)|
-	(MOIS a = NUMERO
-		{ lepar_arbre.ajouteFils(new Arbre("date.mois =", "'"+a.getText()+"' AND "));}
-	ANNEE a = NUMERO
-		{ lepar_arbre.ajouteFils(new Arbre("date.annee =", "'"+a.getText()+"'"));}
 	)
 ;
 
