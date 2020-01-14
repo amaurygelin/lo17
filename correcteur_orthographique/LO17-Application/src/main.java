@@ -253,15 +253,25 @@ public class main {
 		while ((fromSecondIndex < n) && (sqlTable[fromSecondIndex].compareTo("from") != 0)){
 			fromSecondIndex++ ;
 		}
-				
+						
 		// if need a join even if only one "from" : for rubrique, email and date
-		if ((sqlTable[2].compareTo("rubrique.rubrique") == 0) || (sqlTable[2].compareTo("email.email") == 0) || (sqlTable[2].compareTo("date.jour") == 0)){
+		if ((sqlTable[2].compareTo("rubrique.rubrique") == 0) || 
+				(sqlTable[2].compareTo("email.email") == 0) || 
+				(sqlTable[2].compareTo("date.jour") == 0) ||
+				((sqlTable[1].compareTo("count(distinct") == 0) && (
+						(sqlTable[2].compareTo("email.email)") == 0) || (sqlTable[2].compareTo("rubrique.rubrique)") == 0)
+				)
+		)){
 			
 			String table = new String();
 			
-			if (sqlTable[2].compareTo("rubrique.rubrique") == 0){
+			if ((sqlTable[2].compareTo("rubrique.rubrique") == 0) || 
+					((sqlTable[1].compareTo("count(distinct") == 0) && (sqlTable[2].compareTo("rubrique.rubrique)") == 0))
+				){
 				table = "rubrique";
-			} else if (sqlTable[2].compareTo("email.email") == 0){
+			} else if ((sqlTable[2].compareTo("email.email") == 0) || 
+					((sqlTable[1].compareTo("count(distinct") == 0) && (sqlTable[2].compareTo("email.email)") == 0))
+				){
 				table = "email";
 			} else {
 				table = "date";
@@ -310,9 +320,7 @@ public class main {
 						
 						sqlTable[fromFirstIndex - 1] = str+"."+sqlTable[fromFirstIndex - 1];
 					}
-					
-					// voir si ce if peut passer avant le traitement du "et"
-					
+										
 					str = ", "+firstTable+" t"+indexTable ;
 					sqlTable[whereFirstIndex - 1] = sqlTable[whereFirstIndex - 1].concat(str);
 					
