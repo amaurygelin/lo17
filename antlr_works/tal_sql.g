@@ -63,7 +63,7 @@ requete returns [Arbre req_arbre = new Arbre("")]
 			} 
 		| SELECT_COUNT
 			{
-			req_arbre.ajouteFils(new Arbre("","select count(*)"));
+			req_arbre.ajouteFils(new Arbre("","select count(distinct "));
 			}
 		)
 		(ARTICLE
@@ -77,6 +77,10 @@ requete returns [Arbre req_arbre = new Arbre("")]
 		| NUMERO
 			{
 			req_arbre.ajouteFils(new Arbre("","numero"));
+			}
+		| RUBRIQUE 
+			{
+			req_arbre.ajouteFils(new Arbre("","rubrique.rubrique"));
 			}
 		| AUTEUR 
 			{

@@ -49,11 +49,12 @@ contacter	auteur
 contact	auteur
 ecrire	auteur
 ecrit	auteur
+rubrique	rubrique
+titre	titre
 paraitre	date
 paru	date
 datant	date
 datent	date
-1er	01
 janvier	mois 01
 fevrier	mois 02
 mars	mois 03

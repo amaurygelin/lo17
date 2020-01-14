@@ -17,12 +17,15 @@ public class main {
 		request = request.replaceAll("n'","ne ");
 		
 		// étape 2 : écrits/publiés en/avant/après -> date en/avant/après
-		request = request.replaceAll("ecrit[es]{0,2} en|publie[es]{0,2} en|publie[es]{0,2} au|paru[es]{0,2} en", "date en");
+		request = request.replaceAll("ecrit[es]{0,2} en|ecrit[es]{0,2} le|publie[es]{0,2} en|publie[es]{0,2} au|paru[es]{0,2} en|dat[aent]{0,3} du", "date en");
 		request = request.replaceAll("ecrit[es]{0,2} avant|publie[es]{0,2} avant|paru[es]{0,2} avant", "date avant");
 		request = request.replaceAll("ecrit[es]{0,2} apres|publie[es]{0,2} apres|paru[es]{0,2} apres", "date apres");
-			
-		// étape 3 : accoler jour et annee lorsqu'on détecte des chaines de chiffres
 
+		if (request.matches(".*1er.*") == true){
+			request = request.replaceFirst("1er", "01");
+		}
+		
+		// étape 3 : accoler jour et annee lorsqu'on détecte des chaines de chiffres
 		Pattern r = Pattern.compile("[0-9]{4}");
 		Matcher m = r.matcher(request);
 		StringBuffer sb = new StringBuffer(request);
@@ -41,7 +44,7 @@ public class main {
 		
 		// étape 4 : transformer " ne .. pas  " en "sans .."
 		if (request.matches("(.*)ne(.*)pas(.*)")){
-			request = request.replaceAll("ne", "sans");
+			request = request.replaceAll(" ne ", " sans ");
 			request = request.replaceAll(" pas", "");
 		}
 		
@@ -145,8 +148,8 @@ public class main {
 		String SQLRequest = TalMain3.main(normalizedRequest);
 		
 		// remove brackets
-		SQLRequest = SQLRequest.replace("(", "");
-		SQLRequest = SQLRequest.replace(")", "");
+		SQLRequest = SQLRequest.replace("( ", "");
+		SQLRequest = SQLRequest.replace(" )", "");
 		
 		// remove excess spaces
 		SQLRequest = SQLRequest.trim().replaceAll(" +", " "); 
@@ -165,7 +168,37 @@ public class main {
 			sqlTable[i] = token ;
 			i++ ;
 		}
-		
+				
+		// select count(distinct table.col) from ...
+		if (sqlTable[1].compareTo("count(distinct") == 0){
+			str = "count(distinct "+sqlTable[2]+")" ;
+			sqlTable[1] = str ;
+			i = 2 ;
+			while (i < n-1){
+				sqlTable[i] = sqlTable[i+1] ;
+				i ++ ;
+			}
+			
+			sqlTable[i] = "";
+						
+			// tokens back to string
+			SQLRequest = sqlTable[0];
+			for (i = 1 ; i < n ; i++){
+				SQLRequest = SQLRequest+" "+sqlTable[i];
+			}
+			
+			System.out.println("Transformation select count : "+SQLRequest);
+			
+			StringTokenizer sqlTokens3 = new StringTokenizer(SQLRequest);
+			n = sqlTokens3.countTokens();
+			i = 0;
+			while (sqlTokens3.hasMoreTokens()) {
+				token = sqlTokens3.nextToken();
+				sqlTable[i] = token ;
+				i++ ;
+			}
+		}
+				
 		// indice des tables t1, t2 etc
 		int indexTable = 1 ;
 				
@@ -221,16 +254,21 @@ public class main {
 			fromSecondIndex++ ;
 		}
 				
-		// if need a join even if only one "from" : for email and date
-		if ((sqlTable[2].compareTo("email.email") == 0) || (sqlTable[2].compareTo("date.jour") == 0)){
+		// if need a join even if only one "from" : for rubrique, email and date
+		if ((sqlTable[2].compareTo("rubrique.rubrique") == 0) || (sqlTable[2].compareTo("email.email") == 0) || (sqlTable[2].compareTo("date.jour") == 0)){
 			
 			String table = new String();
 			
-			if (sqlTable[2].compareTo("email.email") == 0){
+			if (sqlTable[2].compareTo("rubrique.rubrique") == 0){
+				table = "rubrique";
+			} else if (sqlTable[2].compareTo("email.email") == 0){
 				table = "email";
 			} else {
 				table = "date";
 			}
+			
+			// add join condition
+			String strAnd = " AND "+sqlTable[fromFirstIndex+1]+".fichier = "+table+".fichier";
 						
 			// concatenate 2nd table to 1st table
 			str = ", "+table;
@@ -241,10 +279,8 @@ public class main {
 			for (i = 1 ; i < n ; i++){
 				SQLRequest = SQLRequest+" "+sqlTable[i];
 			}
-						
-			// add join condition
-			str = " AND titretexte.fichier = "+table+".fichier";
-			SQLRequest = SQLRequest.concat(str);
+			
+			SQLRequest = SQLRequest.concat(strAnd);
 			
 			System.out.println("\n 2 tables join SQL : "+SQLRequest);			
 		}
@@ -257,27 +293,49 @@ public class main {
 						
 			// if firstTable = secondTable, don't do join
 			if (firstTable.compareTo(secondTable) == 0){
-									
+				
 				int whereFirstIndex = 0 ;
 				while (sqlTable[whereFirstIndex].compareTo("where") != 0){
 					whereFirstIndex++ ;
 				}
 				
-				str = ", "+firstTable+" t"+indexTable ;
-				sqlTable[whereFirstIndex - 1] = sqlTable[whereFirstIndex - 1].concat(str);
+				// if same table and same column : need to declare table multiple times
+				// ex : t1.mot = "x" and t2.mot="y" and t1.fichier = t2.fichier				
+				if (sqlTable[whereFirstIndex+1].split("\\.")[1].compareTo(sqlTable[fromSecondIndex+3].split("\\.")[1]) == 0){
+					
+					if (indexTable == 1){
+						str = " t"+(indexTable-1) ;
+						sqlTable[fromFirstIndex + 1] = sqlTable[fromFirstIndex + 1].concat(str);
+						sqlTable[whereFirstIndex + 1] = sqlTable[whereFirstIndex + 1].replaceAll(firstTable, str);
+						
+						sqlTable[fromFirstIndex - 1] = str+"."+sqlTable[fromFirstIndex - 1];
+					}
+					
+					// voir si ce if peut passer avant le traitement du "et"
+					
+					str = ", "+firstTable+" t"+indexTable ;
+					sqlTable[whereFirstIndex - 1] = sqlTable[whereFirstIndex - 1].concat(str);
+					
+					str = "t"+indexTable ;
+					sqlTable[fromSecondIndex + 3] = sqlTable[fromSecondIndex + 3].replaceAll(firstTable, str) ;
+					
+					sqlTable[fromSecondIndex] = "AND t"+indexTable+".fichier = t"+(indexTable-1)+".fichier AND";
 				
-				str = "t"+indexTable ;
-				sqlTable[fromSecondIndex + 3] = sqlTable[fromSecondIndex + 3].replaceAll(firstTable, str) ;
+				// if same table but different columns, no join needed
+				} else {
+					sqlTable[fromSecondIndex] = "AND";
+				}
 				
-				sqlTable[fromSecondIndex] = "AND t"+indexTable+".fichier = t"+(indexTable-1)+".fichier AND";
 				sqlTable[fromSecondIndex + 1] = "";
 				sqlTable[fromSecondIndex + 2] = "";
 				
 			} else {
 			
-				// add select TABLE.param
-				str = "."+sqlTable[fromFirstIndex-1] ;
-				sqlTable[fromFirstIndex-1] = firstTable.concat(str);
+				// add select TABLE.param (if not select count)
+				if (sqlTable[fromFirstIndex-1].matches(".*count.*") == false){ 
+					str = "."+sqlTable[fromFirstIndex-1] ;
+					sqlTable[fromFirstIndex-1] = firstTable.concat(str);
+				}
 				
 				// concatenate 2nd table to 1st table
 				str = ", "+sqlTable[fromSecondIndex+1];
@@ -328,11 +386,11 @@ public class main {
  * je veux les articles dont la rubrique est focus
  * je veux les articles qui parlent d'economie et ecrits en 15 janvier 2012
  * je veux les articles qui parlent de recherche et numerique mais qui ne parlent pas d'economie
+ * combien d'articles parlent du cnrs et sont ecrits en 2012
  */
 
 // EXEMPLES REQUÊTES A FAIRE FONCTIONNER 
 /* 
- * combien...
  * 
- * 
+ * Trouve des articles au sujet de l'energie mais qui ne parlent pas du nucleaire
  */
