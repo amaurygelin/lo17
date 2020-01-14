@@ -142,6 +142,7 @@ public class main {
 		int etFlag = 0 ;
 		if (normalizedRequest.matches("(.*)et(.*)")){
 			etFlag = 1 ;
+			
 		}
 		
 		// appeler parser antlr pour produire requête SQL
@@ -254,22 +255,15 @@ public class main {
 			fromSecondIndex++ ;
 		}
 						
-		// if need a join even if only one "from" : for rubrique, email and date
-		if ((sqlTable[2].compareTo("rubrique.rubrique") == 0) || 
-				(sqlTable[2].compareTo("email.email") == 0) || 
+		// if need a join even if only one "from" : for email and date
+		if ((sqlTable[2].compareTo("email.email") == 0) || 
 				(sqlTable[2].compareTo("date.jour") == 0) ||
-				((sqlTable[1].compareTo("count(distinct") == 0) && (
-						(sqlTable[2].compareTo("email.email)") == 0) || (sqlTable[2].compareTo("rubrique.rubrique)") == 0)
-				)
-		)){
+				((sqlTable[1].compareTo("count(distinct") == 0) && (sqlTable[2].compareTo("email.email)") == 0))
+		){
 			
 			String table = new String();
 			
-			if ((sqlTable[2].compareTo("rubrique.rubrique") == 0) || 
-					((sqlTable[1].compareTo("count(distinct") == 0) && (sqlTable[2].compareTo("rubrique.rubrique)") == 0))
-				){
-				table = "rubrique";
-			} else if ((sqlTable[2].compareTo("email.email") == 0) || 
+			if ((sqlTable[2].compareTo("email.email") == 0) || 
 					((sqlTable[1].compareTo("count(distinct") == 0) && (sqlTable[2].compareTo("email.email)") == 0))
 				){
 				table = "email";
@@ -395,10 +389,11 @@ public class main {
  * je veux les articles qui parlent d'economie et ecrits en 15 janvier 2012
  * je veux les articles qui parlent de recherche et numerique mais qui ne parlent pas d'economie
  * combien d'articles parlent du cnrs et sont ecrits en 2012
+ * Trouve des articles au sujet de l'energie mais qui ne parlent pas du nucleaire
  */
 
 // EXEMPLES REQUÊTES A FAIRE FONCTIONNER 
 /* 
  * 
- * Trouve des articles au sujet de l'energie mais qui ne parlent pas du nucleaire
+ * 
  */

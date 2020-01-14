@@ -80,7 +80,7 @@ requete returns [Arbre req_arbre = new Arbre("")]
 			}
 		| RUBRIQUE 
 			{
-			req_arbre.ajouteFils(new Arbre("","rubrique.rubrique"));
+			req_arbre.ajouteFils(new Arbre("","rubrique"));
 			}
 		| AUTEUR 
 			{

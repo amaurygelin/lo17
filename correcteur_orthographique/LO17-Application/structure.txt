@@ -55,6 +55,7 @@ paraitre	date
 paru	date
 datant	date
 datent	date
+entre	entre
 janvier	mois 01
 fevrier	mois 02
 mars	mois 03
